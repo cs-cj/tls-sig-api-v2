@@ -79,18 +79,12 @@ module Tls
            if base64Userbuf != nil 
                contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
            end
-           # todo
-           # byte[] byteKey = key.getBytes("UTF-8");
-           # Mac hmac = Mac.getInstance("HmacSHA256");
-           # SecretKeySpec keySpec = new SecretKeySpec(byteKey, "HmacSHA256");
-           # hmac.init(keySpec);
-           # byte[] byteSig = hmac.doFinal(contentToBeSigned.getBytes("UTF-8"));
-           # return new BASE64Encoder().encode(byteSig);
-           
+
+           key = "key"
+           contentToBeSigned = "aaa"
            byteKey = key.encode('utf-8')
            data = contentToBeSigned.encode('utf-8')
-           digest = OpenSSL::Digest.new('sha256')
-           res = OpenSSL::HMAC.hexdigest(digest, byteKey, data)
+           res = OpenSSL::HMAC.digest("sha256", byteKey, data)
            res = Base64.encode64(res)
            res
          end
