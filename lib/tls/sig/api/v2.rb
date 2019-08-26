@@ -52,7 +52,7 @@ module Tls
             base64UserBuf = nil
             if userbuf != nil 
               # base64UserBuf = new BASE64Encoder().encode(userbuf);
-              base64UserBuf = Base64.encode64(userbuf) #.gsub("\n","")
+              base64UserBuf = Base64.strict_encode64(userbuf)
               sigDoc["TLS.userbuf"] = base64UserBuf
             end
             sig = hmacsha256(identifier, currTime, expire, base64UserBuf);
@@ -61,16 +61,15 @@ module Tls
             end
             
             sigDoc["TLS.sig"] = sig
-            
-            # todo node js to ruby
-            # var compressed = zlib.deflateSync(newBuffer(JSON.stringify(sigDoc))).toString('base64');
-            # return base64url.escape(compressed);
+  
             puts sigDoc
             json = sigDoc.to_json
             puts json
             data_compressed = Zlib::Deflate.deflate(json)
-            base64str = Base64.encode64(data_compressed) #.gsub("\n","")
-            URI.escape(base64str)
+            base64str = Base64.strict_encode64(data_compressed) 
+            # URI.escape(base64str)
+            # base64str
+            escape(base64str)
           end
 
           protected
@@ -80,16 +79,16 @@ module Tls
            if base64Userbuf != nil 
                contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
            end
-
-          #  key = "key"
-          #  contentToBeSigned = "aaa"
-          #  byteKey = key.encode('utf-8')
-          #  data = contentToBeSigned.encode('utf-8')
             puts key
             puts contentToBeSigned
            res = OpenSSL::HMAC.digest("sha256", key, contentToBeSigned)
-           res = Base64.encode64(res) #.gsub("\n","")
+           res = Base64.strict_encode64(res) 
            res
+         end
+
+
+         def escape(str)
+           str.gsub(/\+/, '*').gsub(/\//, '-').gsub(/=/, '_')
          end
 
         end
