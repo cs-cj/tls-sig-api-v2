@@ -1,12 +1,9 @@
 require "tls/sig/api/v2/version"
-
 require 'json'
-# require 'rest-client'
 require 'base64'
 require 'openssl'
 require "zlib"
-require 'digest/md5'
-require 'uri'
+# require 'digest/md5'
 require 'time'
 
 module Tls
@@ -51,24 +48,17 @@ module Tls
             }
             base64UserBuf = nil
             if userbuf != nil 
-              # base64UserBuf = new BASE64Encoder().encode(userbuf);
               base64UserBuf = Base64.strict_encode64(userbuf)
               sigDoc["TLS.userbuf"] = base64UserBuf
             end
             sig = hmacsha256(identifier, currTime, expire, base64UserBuf);
             if sig == ""
               return "";
-            end
-            
+            end       
             sigDoc["TLS.sig"] = sig
-  
-            puts sigDoc
             json = sigDoc.to_json
-            puts json
             data_compressed = Zlib::Deflate.deflate(json)
             base64str = Base64.strict_encode64(data_compressed) 
-            # URI.escape(base64str)
-            # base64str
             escape(base64str)
           end
 
@@ -79,8 +69,6 @@ module Tls
            if base64Userbuf != nil 
                contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
            end
-            puts key
-            puts contentToBeSigned
            res = OpenSSL::HMAC.digest("sha256", key, contentToBeSigned)
            res = Base64.strict_encode64(res) 
            res

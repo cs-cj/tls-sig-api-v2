@@ -32,7 +32,13 @@ Or install it yourself as:
     sig = server.gen_sig("xiaojun", 86400*180)
 
 ```    
-   
+
+## Reference
+
+* [tencent IM UserSig document](https://cloud.tencent.com/document/product/269/32688)
+
+* [node genSig code](https://github.com/tencentyun/tls-sig-api-v2-node)
+
 
 ## Development
 
